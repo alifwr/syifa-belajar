@@ -1,133 +1,143 @@
-Berikut adalah draf perencanaan proyek (*Project Planning*) komprehensif untuk ketiga tema proyek LLM yang diusulkan. Format ini dirancang menggunakan Markdown agar terstruktur dan siap digunakan di repositori GitHub atau portofolio proyek Syifa.
+# Jalur Pembelajaran: Pembuatan Pipeline Fine-Tuning LLM
+*(LLM Fine-Tuning Pipeline Learning Track)*
+
+Selamat datang di repositori pembelajaran Syifa! Repositori ini dirancang khusus sebagai panduan terstruktur dan praktis untuk menguasai pembuatan pipeline *Fine-Tuning* LLM tingkat produksi (*production-grade*). 
+
+Melalui tiga proyek bertahap di bawah ini, Syifa akan belajar mendesain pipeline data, melakukan pelatihan model yang efisien, mengoptimalkan bobot model, mengevaluasi hasil secara kuantitatif, hingga melakukan deployment di lingkungan lokal maupun cloud.
 
 ---
 
-# Multi-Project Blueprint: Production-Grade LLM Fine-Tuning, Optimization, and Deployment
-
-Dokumen ini memuat draf perencanaan taktis untuk tiga proyek implementasi *Large Language Model* (LLM) tingkat lanjut, yang berfokus pada spesialisasi domain, integrasi sistem (*agentic workflows*), dan efisiensi komputasi *edge*.
+## 🎯 Target Kompetensi Utama
+Setelah menyelesaikan seluruh kurikulum ini, Syifa diharapkan mampu:
+1. **Data Engineering untuk LLM:** Mengolah, menyaring, dan memformat dataset mentah menjadi instruksi terstruktur (*Instruction/Alignment Tuning*).
+2. **Efficient Fine-Tuning (PEFT/QLoRA):** Memahami dan mengonfigurasi hyperparameter pelatihan (LoRA alpha, rank, target modules) menggunakan hardware secara optimal.
+3. **Experiment Tracking & Logging:** Menggunakan Weights & Biases (WandB) untuk memantau loss pelatihan secara real-time.
+4. **Model Evaluation & Alignment:** Melakukan evaluasi kuantitatif otomatis pada LLM hasil training (misal dengan Ragas) dan memahami bias model.
+5. **Model Optimization & Edge Deployment:** Melakukan kuantisasi model (*Post-Training Quantization*) dan membangun layanan inferensi berkecepatan tinggi (*serving*).
 
 ---
 
-## PROJECT 1: Specialized Biomedical LLM Assistant via Parameter-Efficient Fine-Tuning (PEFT)
+## 🗺️ Peta Jalan Kurikulum (3 Milestone Utama)
 
-### 1. Project Overview & Objectives
+```mermaid
+graph TD
+    A[Milestone 1: Fondasi Pipeline & SFT] -->|Lulus| B[Milestone 2: Alignment & Structured Output]
+    B -->|Lulus| C[Milestone 3: Kuantisasi & Edge Deployment]
+    
+    style A fill:#4F46E5,stroke:#312E81,color:#FFF
+    style B fill:#0D9488,stroke:#115E59,color:#FFF
+    style C fill:#0891B2,stroke:#155E75,color:#FFF
+```
 
-Proyek ini bertujuan untuk melakukan *fine-tuning* pada *Open-Source* LLM berskala menengah agar memiliki spesialisasi tinggi dalam domain biomedis dan medis. Model dilatih untuk memahami istilah klinis, merangkum literatur biomedis, dan menjawab pertanyaan berbasis bukti (*evidence-based QA*) dengan meminimalkan halusinasi.
+---
 
-### 2. Technical Stack & Tools
+## 📚 Detail Kurikulum Proyek
 
+### 🧠 MILESTONE 1: Specialized Biomedical LLM Assistant via PEFT (QLoRA)
+**Fokus Belajar:** Fondasi pembuatan pipeline fine-tuning, persiapan data latih medis, serta pemantauan eksperimen.
+
+#### 1. Deskripsi & Tujuan Pembelajaran
+Melatih model berskala menengah agar mengenali domain khusus (biomedis/medis). Syifa akan belajar membangun pipeline SFT dari nol, menyaring data akademik yang kompleks, meminimalkan halusinasi melalui dataset berkualitas, dan menyajikan model hasil latihan.
+
+#### 2. Tech Stack & Tools
 * **Base Model:** `MedGemma-1.5` (spesialisasi klinis), `Gemma-4-12B`, atau `Llama-4-Scout`.
-
-
-* **Training & Optimization:** PyTorch, Hugging Face (Transformers, TRL, PEFT), **Unsloth** (untuk akselerasi QLoRA 4-bit).
-
-
+* **Framework Pelatihan:** PyTorch, Hugging Face (Transformers, TRL, PEFT), **Unsloth** (untuk akselerasi QLoRA 4-bit secara efisien).
 * **Dataset:** `PubMedQA` & `MedQA (USMLE)`.
-
-
 * **Experiment Tracking:** Weights & Biases (WandB).
+* **Inference Serving:** vLLM, FastAPI, Docker.
 
+#### 3. Panduan Tugas Mingguan (Syllabus)
+* **Minggu 1: Data Engineering & Parsing**
+  * **Tugas:** Unduh dataset `PubMedQA` dan `MedQA`, buat skrip Python untuk membersihkan teks, lalu format data ke dalam *Chat Template* Hugging Face (format instruksi User-Assistant). bagi menjadi data *Train* (80%), *Val* (10%), dan *Test* (10%).
+* **Minggu 2: Environment Setup & LoRA Config**
+  * **Tugas:** Konfigurasi lingkungan GPU menggunakan Docker. Buat notebook/skrip training terstruktur dengan menentukan parameter LoRA: rank (`r=16`), alpha (`lora_alpha=32`), dan target modul perhatian (`q_proj`, `v_proj`, dsb.).
+* **Minggu 3: Training & Kuantitatif Evaluasi**
+  * **Tugas:** Jalankan pelatihan QLoRA 4-bit terakselerasi dengan Unsloth. Hubungkan metrik pelatihan ke WandB untuk melacak kurva *training loss*. Setelah selesai, evaluasi model pada data *Test* menggunakan framework **Ragas** untuk menghitung metrik *faithfulness* dan *context recall*.
+* **Minggu 4: Merging & FastAPI Serving**
+  * **Tugas:** Gabungkan (*merge*) bobot LoRA adapter ke base model. Buat API inferensi berbasis **FastAPI** dengan dukungan streaming token menggunakan **vLLM**, lalu kemas ke dalam Docker image.
 
-* **Inference & Deployment:** vLLM, FastAPI, Docker.
-
-
-
-### 3. Project Roadmap (4-Week Timeline)
-
-* **Week 1 (Data Engineering):** Mengunduh dataset `PubMedQA` dan `MedQA`, melakukan *data cleaning*, dan memformatnya ke dalam instruksi terstruktur (*Instruction Tuning*). membagi data menjadi *Train* (80%), *Validation* (10%), dan *Test* (10%).
-
-
-* **Week 2 (Environment Setup & Config):** Mengonfigurasi Docker dengan CUDA toolkit. Menentukan konfigurasi hyperparameter LoRA (`r=16`, `lora_alpha=32`, menargetkan seluruh modul atensi dan MLP).
-
-
-* **Week 3 (Training & Quantitative Evaluation):** Menjalankan *Supervised Fine-Tuning* (SFT) dengan *tracking* via WandB. Mengevaluasi model akhir pada *Test Set* menggunakan framework **Ragas** untuk mengukur *faithfulness* dan *context recall*.
-
-
-* **Week 4 (Merging & Production Deployment):** Menggabungkan bobot LoRA kembali ke model dasar. Membangun *inference service* dengan **vLLM** dan **FastAPI** di dalam kontainer Docker untuk mendukung *token streaming* berkecepatan tinggi.
-
-
+#### 4. Deliverables Proyek
+* Skrip preprocessing data (`preprocess.py`).
+* Notebook/skrip pelatihan (`train_qlora.py`).
+* Dashboard eksperimen WandB (link laporan).
+* Kode serving FastAPI (`app.py`) dan Dockerfile.
 
 ---
 
-## PROJECT 2: LLM Fine-Tuning for Enterprise Function Calling & Structured Tool Use
+### 🔌 MILESTONE 2: LLM Fine-Tuning for Enterprise Function Calling & Structured Tool Use
+**Fokus Belajar:** Melatih kecerdasan model agar patuh terhadap format sintaksis (JSON) untuk berinteraksi dengan API eksternal (AI Agent Controller).
 
-### 1. Project Overview & Objectives
+#### 1. Deskripsi & Tujuan Pembelajaran
+Melatih model berukuran menengah untuk bertindak sebagai otak pengambil keputusan (*agentic controller*). Fokusnya adalah melatih model mengubah instruksi teks natural pengguna menjadi pemanggilan fungsi/API (*Function Calling*) berformat JSON valid secara konsisten.
 
-Proyek ini berfokus pada pelatihan model bahasa berukuran kecil hingga menengah agar mampu bertindak sebagai *Controller* dalam arsitektur AI Agent. Model dilatih secara intensif untuk mengubah instruksi teks natural manusia menjadi sintaks pemanggilan fungsi/API (*Function Calling*) atau query database secara konsisten dalam format JSON yang valid tanpa *catastrophic forgetting*.
-
-### 2. Technical Stack & Tools
-
+#### 2. Tech Stack & Tools
 * **Base Model:** `Phi-4-Medium` (dioptimalkan untuk reasoning & structured output) atau `Mistral-Small-4`.
+* **Framework Pelatihan:** Hugging Face PEFT/LoRA, Axolotl / TRL.
+* **Dataset:** `ToolBench` & subset dari `Spider (Text-to-SQL)`.
+* **Validation & Agent Framework:** JSON Schema Validation, FastAPI, **LangGraph** / **LangChain**.
 
+#### 3. Panduan Tugas Mingguan (Syllabus)
+* **Minggu 1: Desain Skema Data Multi-Turn**
+  * **Tugas:** Buat representasi data latih dengan format skema pemanggilan API tiruan (tersedia parameter, tipe data, deskripsi). Format dataset agar model belajar merespons dengan: `Thought` -> `Call Action (JSON)` -> `Observation (API Output)` -> `Final Answer`.
+* **Minggu 2: Setup Alignment & System Prompt Tuning**
+  * **Tugas:** Konfigurasi skrip fine-tuning yang berfokus menjaga kemampuan bahasa umum model sembari melatih kepatuhan JSON. Uji pengaruh penulisan *system prompt* terhadap output format.
+* **Minggu 3: Training & Robustness Testing (Pen-testing Model)**
+  * **Tugas:** Jalankan proses pelatihan. Buat skrip evaluasi otomatis untuk memvalidasi output JSON model terhadap skema JSON menggunakan pustaka Python `jsonschema`. Hitung persentase kegagalan format (*parsing error rate*).
+* **Minggu 4: Integrasi Agentic System**
+  * **Tugas:** Integrasikan model hasil fine-tuning ke dalam graf alur kerja agen menggunakan **LangGraph**. Gantikan ketergantungan API berbayar dengan model lokal ini untuk menyelesaikan tugas interaktif.
 
-* **Training & Alignment:** Hugging Face (PEFT/LoRA), TRL (Transformer Reinforcement Learning), Axolotl.
-
-
-* **Dataset:** `ToolBench` & `Spider (Text-to-SQL subset)`.
-
-
-* **Validation & Serving:** JSON Schema Validation, FastAPI, Qdrant/Elasticsearch.
-
-
-
-### 3. Project Roadmap (4-Week Timeline)
-
-* **Week 1 (Schema & Data Synthesis):** Menyusun skema API tiruan dan memformat dataset `ToolBench` ke dalam pola interaksi: `User Query` -> `Available Tools` -> `Target JSON Output`.
-
-
-* **Week 2 (LoRA Training Setup):** Mengonfigurasi skrip pelatihan LoRA dengan fokus parameter yang ketat untuk menjaga kepatuhan sintaksis JSON tanpa merusak kemampuan bahasa umum model.
-
-
-* **Week 3 (Training & Robustness Testing):** Melatih model dan melacak metrik kegagalan format (*parsing errors*). Melakukan pengujian penetrasi dengan input yang ambigu untuk menguji ketahanan logika penalaran model.
-
-
-* **Week 4 (Agent Integration):** Mengintegrasikan model yang telah di-*fine-tune* ke dalam arsitektur multi-agent menggunakan **LangGraph** atau **LangChain**, menggantikan ketergantungan pada API eksternal komersial.
-
-
+#### 4. Deliverables Proyek
+* Dataset training berformat instruksi alat (`agent_dataset.jsonl`).
+* Skrip fine-tuning beserta konfigurasi parameter (`fine_tune_agent.py`).
+* Skrip validasi JSON schema (`validate_output.py`).
+* Kode visualisasi alur agen menggunakan LangGraph.
 
 ---
 
-## PROJECT 3: TinyLLM Fine-Tuning, Quantization, and Deployment for Edge Devices
+### 📱 MILESTONE 3: TinyLLM Fine-Tuning, Quantization, and Deployment for Edge Devices
+**Fokus Belajar:** Teknik kompresi model (kuantisasi) dan optimasi performa inferensi lokal (*On-device AI*).
 
-### 1. Project Overview & Objectives
+#### 1. Deskripsi & Tujuan Pembelajaran
+Mengoptimalkan Small Language Model (SLM) agar muat dijalankan pada perangkat dengan memori sangat terbatas (seperti laptop standar atau perangkat IoT/Edge) dengan latensi minimal dan efisiensi memori maksimal tanpa menurunkan akurasi secara drastis.
 
-Proyek ini menjembatani kapabilitas AI modern dengan keterbatasan *hardware* lokal (*On-device AI*). Fokus utamanya adalah melakukan *fine-tuning* pada *Small Language Model* (SLM) untuk tugas spesifik, kemudian menerapkan teknik *Post-Training Quantization* ekstrem agar model dapat berjalan secara luring (*offline*) dengan *latency* rendah pada perangkat dengan spesifikasi terbatas.
-
-### 2. Technical Stack & Tools
-
+#### 2. Tech Stack & Tools
 * **Base Model:** `Gemma-4-E4B` (Edge-optimized) atau `Phi-4-mini` (3.8B).
+* **Quantization & Edge Runtime:** `llama.cpp`, format GGUF, Ollama.
+* **Dataset:** `SlimOrca` (High-quality reasoning subset) & `Alpaca`.
+* **Profiling Tools:** Skrip pemantauan CPU/GPU/VRAM berbasis Python.
 
+#### 3. Panduan Tugas Mingguan (Syllabus)
+* **Minggu 1: Data Filtering & Model Selection**
+  * **Tugas:** Seleksi subset berkualitas tinggi dari dataset penalaran umum agar model kecil mendapatkan pola berpikir yang padat informasi.
+* **Minggu 2: SFT pada Model Kecil**
+  * **Tugas:** Latih model dasar 3B-4B parameter menggunakan konfigurasi hemat memori (QLoRA 4-bit). Cari *batch size* dan *learning rate* optimum untuk model berskala kecil agar tidak mengalami *overfitting*.
+* **Minggu 3: Kompilasi & Kuantisasi GGUF**
+  * **Tugas:** Konversi model hasil latih ke format GGUF menggunakan modul konversi dari `llama.cpp`. Lakukan kuantisasi bobot model menjadi variasi **4-bit (Q4_K_M)** dan **5-bit (Q5_K_M)**. Ukur penurunan metrik kebahasaan (*perplexity*) pasca kuantisasi.
+* **Minggu 4: Benchmarking & Profiling Perangkat Lokal**
+  * **Tugas:** Daftarkan model kuantisasi ke dalam **Ollama** lokal. Buat skrip pengujian berbasis Python untuk memantau performa inferensi real-time: ukur penggunaan RAM/VRAM, latensi token pertama (*Time to First Token* - TTFT), dan kecepatan generasi (*Tokens Per Second* - TPS).
 
-* **Fine-Tuning:** PyTorch, Hugging Face PEFT (LoRA/QLoRA).
-
-
-* **Quantization & Edge Runtime:** `Llama.cpp`, GGUF Format, Ollama.
-
-
-* **Dataset:** `SlimOrca` (High-quality general reasoning) & `Alpaca`.
-
-
-* **Benchmarking:** Custom Python profiling scripts untuk monitoring VRAM/RAM, CPU/GPU utilization, dan *Tokens Per Second* (TPS).
-
-
-
-### 3. Project Roadmap (4-Week Timeline)
-
-* **Week 1 (Dataset Filtering):** Memilih subset berkualitas tinggi dari `SlimOrca` dan `Alpaca` untuk memastikan model kecil mendapatkan sinyal pelatihan yang padat informasi.
-
-
-* **Week 2 (Downsized SFT Training):** Melakukan *Supervised Fine-Tuning* (SFT) pada model dasar 3B parameter. Mengoptimalkan *learning rate* dan *batch size* agar pas dengan batasan komputasi *hardware*.
-
-
-* **Week 3 (Compilation & Quantization):** Mengompilasi bobot model akhir menggunakan `llama.cpp`. Melakukan kuantisasi bobot menjadi format **GGUF 4-bit (Q4_K_M)** dan **5-bit (Q5_K_M)**, lalu mengevaluasi penurunan *perplexity* pasca-kuantisasi.
-
-
-* **Week 4 (Local Benchmarking & Deployment):** Menjalankan model secara lokal via **Ollama**. Membuat skrip *benchmark* untuk mengukur performa *real-time*: menargetkan penghematan memori hingga **>70%** dan memantau stabilitas metrik *Time to First Token* (TTFT).
-
-
+#### 4. Deliverables Proyek
+* Skrip konversi model ke format GGUF.
+* Model kuantisasi berformat `.gguf` (atau skrip replikasinya).
+* Laporan performa lokal berisi tabel perbandingan akurasi vs penggunaan memori untuk tipe kuantisasi yang berbeda.
 
 ---
 
-Ketiga cetak biru proyek di atas sangat selaras dengan latar belakang akademis dan rekam jejak profesional Syifa di bidang rekayasa perangkat lunak serta komputasi performa tinggi.
-
-Dari ketiga draf perencanaan di atas, proyek mana yang ingin dieksekusi atau didokumentasikan terlebih dahulu ke dalam portofolionya, Alif-sama?
+## 🛠️ Cara Memulai & Alur Kerja Pembelajaran
+Untuk menjaga kedisiplinan dan struktur pembelajaran, Syifa disarankan mengikuti langkah berikut:
+1. **Fork/Clone Repositori ini:** Lakukan klon di perangkat lokal.
+2. **Buat Folder Proyek Mandiri:** Gunakan struktur direktori berikut untuk menaruh tugas:
+   ```text
+   📂 syifa-belajar/
+   ├── 📂 project-1-biomedical/
+   │   ├── 📂 data/
+   │   ├── preprocess.py
+   │   ├── train_qlora.py
+   │   └── ...
+   ├── 📂 project-2-agentic/
+   ├── 📂 project-3-edge/
+   ├── .gitignore
+   └── README.md
+   ```
+3. **Kerjakan Langkah per Minggu:** Selalu commit hasil kode Anda di akhir minggu.
+4. **Gunakan Laporan Proyek:** Di setiap folder proyek, buatlah `README.md` lokal kecil yang merangkum hasil eksperimen (misal: kurva training loss, metrik evaluasi Ragas, atau tabel benchmark memori).
