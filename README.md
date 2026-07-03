@@ -16,7 +16,7 @@ Proyek ini bertujuan untuk melakukan *fine-tuning* pada *Open-Source* LLM berska
 
 ### 2. Technical Stack & Tools
 
-* **Base Model:** `Llama-3-8B-Instruct` atau `Gemma-2-9B-It`.
+* **Base Model:** `MedGemma-1.5` (spesialisasi klinis), `Gemma-4-12B`, atau `Llama-4-Scout`.
 
 
 * **Training & Optimization:** PyTorch, Hugging Face (Transformers, TRL, PEFT), **Unsloth** (untuk akselerasi QLoRA 4-bit).
@@ -57,7 +57,7 @@ Proyek ini berfokus pada pelatihan model bahasa berukuran kecil hingga menengah 
 
 ### 2. Technical Stack & Tools
 
-* **Base Model:** `Mistral-7B-Instruct-v0.3` atau `Phi-3-medium-instruct`.
+* **Base Model:** `Phi-4-Medium` (dioptimalkan untuk reasoning & structured output) atau `Mistral-Small-4`.
 
 
 * **Training & Alignment:** Hugging Face (PEFT/LoRA), TRL (Transformer Reinforcement Learning), Axolotl.
@@ -95,7 +95,7 @@ Proyek ini menjembatani kapabilitas AI modern dengan keterbatasan *hardware* lok
 
 ### 2. Technical Stack & Tools
 
-* **Base Model:** `Llama-3.2-3B-Instruct` atau `Phi-3.5-mini-instruct`.
+* **Base Model:** `Gemma-4-E4B` (Edge-optimized) atau `Phi-4-mini` (3.8B).
 
 
 * **Fine-Tuning:** PyTorch, Hugging Face PEFT (LoRA/QLoRA).
